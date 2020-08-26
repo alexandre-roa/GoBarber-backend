@@ -1,4 +1,4 @@
-import { Router, request, response } from 'express';
+import { Router } from 'express';
 
 import CreateUserService from '../services/CreateUserService'
 
@@ -15,6 +15,8 @@ usersRouter.post('/', async (request, response) => {
       email,
       password
     })
+
+    delete user.password;
 
     response.json(user);
   } catch (e) {
