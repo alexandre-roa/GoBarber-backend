@@ -22,10 +22,17 @@
     "prettier/prettier": "error",
     "class-methods-use-this": "off",
     "@typescript-eslint/camelcase": "off",
+    "no-useless-constructor": "off",
     "@typescript-eslint/no-unnused-var": [
       "error",
       {
         "argsIgnorePattern": "_"
+      }
+    ],
+    "@typescript-eslint/interface-name-prefix": [
+      "error",
+      {
+        "prefixWithI": "always"
       }
     ],
     "import/extensions": [
