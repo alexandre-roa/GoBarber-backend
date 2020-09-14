@@ -8,7 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import User from './Users'
+import User from '@modules/users/infra/typeorm/entities/Users';
 
 @Entity('appointments')
 class Appointment {
@@ -19,8 +19,8 @@ class Appointment {
   provider_id: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({name: 'provider_id'})
-  provider: User
+  @JoinColumn({ name: 'provider_id' })
+  provider: User;
 
   @Column('timestamp with time zone')
   date: Date;

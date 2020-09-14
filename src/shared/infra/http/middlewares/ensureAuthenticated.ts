@@ -1,14 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
-import AppError from '../errors/AppErros'
+import AppError from '@shared/errors/AppErros';
 
-
-import authConfig from '../config/auth';
+import authConfig from '@config/auth';
 
 interface TokenPayLoad {
-  iat: string,
-  exp: string,
-  sub: string
+  iat: string;
+  exp: string;
+  sub: string;
 }
 
 export default function ensureAuthenticated(
@@ -26,11 +25,11 @@ export default function ensureAuthenticated(
   try {
     const decoded = verify(token, authConfig.secret);
 
-    const { sub } = decoded as TokenPayLoad
+    const { sub } = decoded as TokenPayLoad;
 
     request.user = {
-      id: sub
-    }
+      id: sub,
+    };
 
     return next();
   } catch {
