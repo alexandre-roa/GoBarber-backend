@@ -1,4 +1,3 @@
-import { sessionsRouter } from '@modules/users/infra/http/routes/sessions.routes';
 import { Router } from 'express';
 import SessionsController from '../controllers/SessionsController';
 
