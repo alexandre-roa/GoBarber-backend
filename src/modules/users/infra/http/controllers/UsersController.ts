@@ -5,25 +5,17 @@ import { classToClass } from 'class-transformer';
 import CreateUserService from '@modules/users/services/CreateUserService';
 
 export default class UsersController {
-  public async create(
-    request: Request,
-    response: Response,
-  ): Promise<Response | void> {
-    try {
-      const { name, email, password } = request.body;
-      const createUser = container.resolve(CreateUserService);
+  public async create(request: Request, response: Response): Promise<Response> {
+    const { name, email, password } = request.body;
 
-      const user = await createUser.execute({
-        name,
-        email,
-        password,
-      });
+    const createUser = container.resolve(CreateUserService);
 
-      delete user.password;
+    const user = await createUser.execute({
+      name,
+      email,
+      password,
+    });
 
-      response.json({ user: classToClass(user) });
-    } catch (e) {
-      response.status(400).json({ message: e.message });
-    }
+    return response.json(classToClass(user));
   }
 }

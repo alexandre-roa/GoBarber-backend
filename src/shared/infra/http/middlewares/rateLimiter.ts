@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import redis from 'redis';
+import AppError from '@shared/errors/AppError';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
-
-import AppError from '@shared/errors/AppErros';
 
 const redisClient = redis.createClient({
   host: process.env.REDIS_HOST,
   port: Number(process.env.REDIS_PORT),
-  password: process.env.PASS || undefined,
+  password: process.env.REDIS_PASS || undefined,
 });
 
 const limiter = new RateLimiterRedis({
@@ -26,7 +25,7 @@ export default async function rateLimiter(
     await limiter.consume(request.ip);
 
     return next();
-  } catch {
+  } catch (err) {
     throw new AppError('Too many requests', 429);
   }
 }

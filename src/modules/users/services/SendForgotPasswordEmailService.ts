@@ -1,17 +1,17 @@
 import { injectable, inject } from 'tsyringe';
 import path from 'path';
 
-import AppError from '@shared/errors/AppErros';
-import IUsersRepository from '../repositories/IUsersRepository';
+import AppError from '@shared/errors/AppError';
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
-import IUserTokenRepository from '@modules/users/repositories/IUserTokenRepository';
+import IUsersRepository from '../repositories/IUsersRepository';
+import IUserTokensRepository from '../repositories/IUserTokensRepository';
 
 interface IRequest {
   email: string;
 }
 
 @injectable()
-export default class SendForgotPasswordService {
+class SendForgotPasswordEmailService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
@@ -20,19 +20,22 @@ export default class SendForgotPasswordService {
     private mailProvider: IMailProvider,
 
     @inject('UserTokensRepository')
-    private userTokensRepository: IUserTokenRepository,
+    private userTokensRepository: IUserTokensRepository,
   ) {}
+
   public async execute({ email }: IRequest): Promise<void> {
     const user = await this.usersRepository.findByEmail(email);
 
-    if (!user) throw new AppError('User does not exists');
+    if (!user) {
+      throw new AppError('User does not exists.');
+    }
 
     const { token } = await this.userTokensRepository.generate(user.id);
 
     const forgotPasswordTemplate = path.resolve(
       __dirname,
       '..',
-      'templates',
+      'views',
       'forgot_password.hbs',
     );
 
@@ -46,9 +49,11 @@ export default class SendForgotPasswordService {
         file: forgotPasswordTemplate,
         variables: {
           name: user.name,
-          link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
+          link: `${process.env.APP_WEB_URL}/reset-password?token=${token}`,
         },
       },
     });
   }
 }
+
+export default SendForgotPasswordEmailService;

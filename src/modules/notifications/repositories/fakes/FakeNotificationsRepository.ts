@@ -1,10 +1,11 @@
 import { ObjectID } from 'mongodb';
-import Notification from '../../infra/typeorm/schemas/Notification';
+
 import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
 import ICreateNotificationDTO from '@modules/notifications/dtos/ICreateNotificationDTO';
 
-export default class FakeNotificationsRepository
-  implements INotificationsRepository {
+import Notification from '../../infra/typeorm/schemas/Notification';
+
+class NotificationsRepository implements INotificationsRepository {
   private notifications: Notification[] = [];
 
   public async create({
@@ -20,3 +21,5 @@ export default class FakeNotificationsRepository
     return notification;
   }
 }
+
+export default NotificationsRepository;

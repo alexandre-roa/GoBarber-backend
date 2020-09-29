@@ -1,14 +1,12 @@
 import { Router } from 'express';
 import { celebrate, Segments, Joi } from 'celebrate';
 
-import { container } from 'tsyringe';
-import multer from 'multer';
-import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
-
 import ProfileController from '../controllers/ProfileController';
 
-const profileController = new ProfileController();
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+
 const profileRouter = Router();
+const profileController = new ProfileController();
 
 profileRouter.use(ensureAuthenticated);
 

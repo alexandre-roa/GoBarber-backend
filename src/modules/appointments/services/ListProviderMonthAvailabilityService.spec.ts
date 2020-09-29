@@ -1,9 +1,8 @@
-import AppError from '@shared/errors/AppErros';
 import FakeAppointmentsRepository from '../repositories/fakes/FakeAppointmentsRepository';
 import ListProviderMonthAvailabilityService from './ListProviderMonthAvailabilityService';
 
-let listProviderMonthAvailability: ListProviderMonthAvailabilityService;
 let fakeAppointmentsRepository: FakeAppointmentsRepository;
+let listProviderMonthAvailability: ListProviderMonthAvailabilityService;
 
 describe('ListProviderMonthAvailability', () => {
   beforeEach(() => {
@@ -12,7 +11,8 @@ describe('ListProviderMonthAvailability', () => {
       fakeAppointmentsRepository,
     );
   });
-  it('Should be able to list month availability from provider', async () => {
+
+  it('should be able to list the month availability from provider', async () => {
     await fakeAppointmentsRepository.create({
       provider_id: 'user',
       user_id: 'user',

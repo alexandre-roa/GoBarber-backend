@@ -1,8 +1,10 @@
-import User from '../entities/User';
-import { getRepository, Not, Repository } from 'typeorm';
+import { getRepository, Repository, Not } from 'typeorm';
+
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO';
-import IFindALLProvidersDTO from '@modules/users/dtos/IFindAllProvidersDTO';
+import IFindAllProvidersDTO from '@modules/users/dtos/IFindAllProvidersDTO';
+
+import User from '../entities/User';
 
 class UsersRepository implements IUsersRepository {
   private ormRepository: Repository<User>;
@@ -13,6 +15,7 @@ class UsersRepository implements IUsersRepository {
 
   public async findById(id: string): Promise<User | undefined> {
     const user = await this.ormRepository.findOne(id);
+
     return user;
   }
 
@@ -20,28 +23,13 @@ class UsersRepository implements IUsersRepository {
     const user = await this.ormRepository.findOne({
       where: { email },
     });
-    return user;
-  }
-
-  public async create({
-    name,
-    email,
-    password,
-  }: ICreateUserDTO): Promise<User> {
-    const user = this.ormRepository.create({ name, email, password });
-
-    await this.ormRepository.save(user);
 
     return user;
-  }
-
-  public async save(user: User): Promise<User> {
-    return this.ormRepository.save(user);
   }
 
   public async findAllProviders({
     except_user_id,
-  }: IFindALLProvidersDTO): Promise<User[]> {
+  }: IFindAllProvidersDTO): Promise<User[]> {
     let users: User[];
 
     if (except_user_id) {
@@ -53,7 +41,20 @@ class UsersRepository implements IUsersRepository {
     } else {
       users = await this.ormRepository.find();
     }
+
     return users;
+  }
+
+  public async create(userData: ICreateUserDTO): Promise<User> {
+    const appointment = this.ormRepository.create(userData);
+
+    await this.ormRepository.save(appointment);
+
+    return appointment;
+  }
+
+  public async save(user: User): Promise<User> {
+    return this.ormRepository.save(user);
   }
 }
 

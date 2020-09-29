@@ -1,16 +1,17 @@
 import { Router } from 'express';
-import { celebrate, Segments, Joi } from 'celebrate';
-import { container } from 'tsyringe';
 import multer from 'multer';
-import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
 import uploadConfig from '@config/upload';
+import { celebrate, Segments, Joi } from 'celebrate';
 
 import UsersController from '../controllers/UsersController';
 import UserAvatarController from '../controllers/UserAvatarController';
 
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+
+const usersRouter = Router();
 const usersController = new UsersController();
 const userAvatarController = new UserAvatarController();
-const usersRouter = Router();
+
 const upload = multer(uploadConfig.multer);
 
 usersRouter.post(

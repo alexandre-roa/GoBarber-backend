@@ -1,25 +1,26 @@
-import AppError from '@shared/errors/AppErros';
+import AppError from '@shared/errors/AppError';
 
-import FakesUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import FakeStorageProvider from '@shared/container/providers/StorageProvider/fakes/FakeStorageProvider';
+import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import UpdateUserAvatarService from './UpdateUserAvatarService';
 
-let fakesUsersRepository: FakesUsersRepository;
+let fakeUsersRepository: FakeUsersRepository;
 let fakeStorageProvider: FakeStorageProvider;
 let updateUserAvatar: UpdateUserAvatarService;
 
-describe('Update user avatar', () => {
+describe('UpdateUserAvatar', () => {
   beforeEach(() => {
-    fakesUsersRepository = new FakesUsersRepository();
+    fakeUsersRepository = new FakeUsersRepository();
     fakeStorageProvider = new FakeStorageProvider();
 
     updateUserAvatar = new UpdateUserAvatarService(
-      fakesUsersRepository,
+      fakeUsersRepository,
       fakeStorageProvider,
     );
   });
-  it('Should be able to update avatar', async () => {
-    const user = await fakesUsersRepository.create({
+
+  it('should be able to create a new user', async () => {
+    const user = await fakeUsersRepository.create({
       name: 'John Doe',
       email: 'johndoe@example.com',
       password: '123456',
@@ -27,25 +28,25 @@ describe('Update user avatar', () => {
 
     await updateUserAvatar.execute({
       user_id: user.id,
-      avatarFileName: 'avatar.jpg',
+      avatarFilename: 'avatar.jpg',
     });
 
     expect(user.avatar).toBe('avatar.jpg');
   });
 
-  it('Should NOT be able to update avatar from non exist user', async () => {
-    expect(
+  it('should not be able to update avatar from non existing user', async () => {
+    await expect(
       updateUserAvatar.execute({
-        user_id: 'no-existing-user',
-        avatarFileName: 'avatar.jpg',
+        user_id: 'non-existing-user',
+        avatarFilename: 'avatar.jpg',
       }),
     ).rejects.toBeInstanceOf(AppError);
   });
 
-  it('Should be able to delete old avatar when updating new one', async () => {
+  it('should delete old avatar when updating new one', async () => {
     const deleteFile = jest.spyOn(fakeStorageProvider, 'deleteFile');
 
-    const user = await fakesUsersRepository.create({
+    const user = await fakeUsersRepository.create({
       name: 'John Doe',
       email: 'johndoe@example.com',
       password: '123456',
@@ -53,12 +54,12 @@ describe('Update user avatar', () => {
 
     await updateUserAvatar.execute({
       user_id: user.id,
-      avatarFileName: 'avatar.jpg',
+      avatarFilename: 'avatar.jpg',
     });
 
     await updateUserAvatar.execute({
       user_id: user.id,
-      avatarFileName: 'avatar2.jpg',
+      avatarFilename: 'avatar2.jpg',
     });
 
     expect(deleteFile).toHaveBeenCalledWith('avatar.jpg');
